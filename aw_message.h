@@ -17,6 +17,9 @@ struct message {
     int current_payload;
     /** required paylod of robot */
     int required_payload;
+    /** target release position of robot */
+    int tar_row;
+    int tar_col;
 
     //
     // To robots
@@ -39,5 +42,11 @@ struct messsage_box {
 extern struct messsage_box* boxes_from_central_control_node;
 /** message boxes from robots to central control node */
 extern struct messsage_box* boxes_from_robots;
+
+void init_message_boxes(int robot_count);
+void send_message_to_cnt(int robot_index, struct message msg);
+struct message receive_message_from_robot(int robot_index);
+void send_message_to_robot(int robot_index, struct message msg);
+struct message receive_message_from_cnt(int robot_index);
 
 #endif
