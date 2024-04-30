@@ -55,7 +55,7 @@ void robot_thread(void* aux) { // robot_thread implement
     int idx = *((int*)aux);   
     printf("thread for robot %d \n",idx);
     while (1) {
-        int cmd=receive_message_from_cnt(idx);
+        int cmd=receive_message_from_cnt(idx).cmd;
         switch(cmd){
         case 0:
             //wait
@@ -75,7 +75,7 @@ void robot_thread(void* aux) { // robot_thread implement
         boxes_from_robots[idx].msg.tar_row = robots[idx].tar_row;
         boxes_from_robots[idx].msg.tar_col = robots[idx].tar_col;
 
-        send_message_to_cnt(idx, boxes_from_robots[idx]->msg); // send message and block itself
+        send_message_to_cnt(idx, boxes_from_robots[idx].msg); // send message and block itself
     }
 }
 

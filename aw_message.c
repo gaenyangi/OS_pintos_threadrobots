@@ -27,7 +27,7 @@ void send_message_to_cnt(int robot_index, struct message msg) {
 
 struct message* receive_message_from_robot(int robot_index) {
     // Read the message from the message box of the robot
-    return *(boxes_from_robots[robot_index].msg);
+    return &(boxes_from_robots[robot_index].msg);
 }
 
 void send_message_to_robot(int robot_index, struct message msg) {

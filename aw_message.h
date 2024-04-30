@@ -45,7 +45,7 @@ extern struct messsage_box* boxes_from_robots;
 
 void init_message_boxes(int robot_count);
 void send_message_to_cnt(int robot_index, struct message msg);
-struct message receive_message_from_robot(int robot_index);
+struct message* receive_message_from_robot(int robot_index);
 void send_message_to_robot(int robot_index, struct message msg);
 struct message receive_message_from_cnt(int robot_index);
 
