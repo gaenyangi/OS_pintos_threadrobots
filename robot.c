@@ -1,5 +1,15 @@
 #include "projects/automated_warehouse/robot.h"
 
+
+const char map[6][7] = {
+    {'X', 'X', 'A', 'X', 'X', 'X', 'X' },
+    {'X', '1', ' ', '2', '3', '4', 'X' },
+    {'B', ' ', ' ', ' ', ' ', ' ', 'X' },
+    {'X', ' ', ' ', ' ', ' ', ' ', 'X' },
+    {'X', '5', ' ', '6', '7', 'S', 'X' },
+    {'X', 'X', 'C', 'X', 'X', 'W', 'X' }
+};
+
 /**
  * A function setting up robot structure
  */
@@ -18,16 +28,16 @@ void setRobot(struct robot* _robot, const char* name, int row, int col, int requ
 
 void move_robot_to_req(struct robot* _robot) { // move toward the req payload
 
-    if ((_robot->row < _robot->req_row )&& (map_draw_default[_robot->row+1][_robot->col]!='X')) {
+    if ((_robot->row < _robot->req_row )&& (map[_robot->row+1][_robot->col]!='X')) {
         _robot->row++;// Move downwards
     }
-    else if ((_robot->col < _robot->req_col) && (map_draw_default[_robot->row][_robot->col+1] != 'X')) {
+    else if ((_robot->col < _robot->req_col) && (map[_robot->row][_robot->col+1] != 'X')) {
         _robot->col++; // Move rightwards
     }
-    else if ((_robot->row > _robot->req_row) && (map_draw_default[_robot->row-1][_robot->col] != 'X')) {
+    else if ((_robot->row > _robot->req_row) && (map[_robot->row-1][_robot->col] != 'X')) {
         _robot->row--; // Move upwards
     }
-    else if ((_robot->row > _robot->req_col) && (map_draw_default[_robot->row][_robot->col-1] != 'X')) {
+    else if ((_robot->row > _robot->req_col) && (map[_robot->row][_robot->col-1] != 'X')) {
         _robot->col--; // Move leftwards
     }
     //if robot gets to req pos
@@ -36,16 +46,16 @@ void move_robot_to_req(struct robot* _robot) { // move toward the req payload
 
 void move_robot_to_tar(struct robot* _robot) { // after get the payload, move to desitnation
     // Determine the direction of movement based on the current position and the target position
-    if ((_robot->row < _robot->tar_row) && (map_draw_default[_robot->row+1][_robot->col] != 'X')) {
+    if ((_robot->row < _robot->tar_row) && (map[_robot->row+1][_robot->col] != 'X')) {
         _robot->row++; // Move downwards
     }
-    else if ((_robot->col < _robot->tar_col) && (map_draw_default[_robot->row][_robot->col+1] != 'X')) {
+    else if ((_robot->col < _robot->tar_col) && (map[_robot->row][_robot->col+1] != 'X')) {
         _robot->col++; // Move rightwards
     }
-    else if ((_robot->row > _robot->tar_row) && (map_draw_default[_robot->row-1][_robot->col] != 'X')) {
+    else if ((_robot->row > _robot->tar_row) && (map[_robot->row-1][_robot->col] != 'X')) {
         _robot->row--; // Move upwards
     }
-    else if ((_robot->row > _robot->tar_col) && (map_draw_default[_robot->row][_robot->col-1] != 'X')) {
+    else if ((_robot->row > _robot->tar_col) && (map[_robot->row][_robot->col-1] != 'X')) {
         _robot->col--; // Move leftwards
     }
     //if robot gets to target destination

@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include<stdlib.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "threads/init.h"
@@ -112,7 +112,7 @@ void run_automated_warehouse(char **argv)
             else { target_row = 5; target_col = 2; }
 
             char robot_name[5];
-            sprintf(robot_name, "R&d", i);
+            snprintf(robot_name, "R&d", i);
             setRobot(&robots[i], robot_name, 5, 5, target_load, 0,target_row, target_col);
         }
 
@@ -121,7 +121,7 @@ void run_automated_warehouse(char **argv)
         threads[0] = thread_create("CNT", 0, &cnt, NULL);
         for (int i = 1; i < robot_count + 1; i++) {
             char thread_name[5];
-            sprintf(thread_name, "R&d", i);
+            snprintf(thread_name, "R&d", i);
             idxs[i] = i;
             threads[i] = thread_create(thread_name, 0, &robot_thread, &idxs[i]);
         }
