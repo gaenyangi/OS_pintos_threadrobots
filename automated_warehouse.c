@@ -8,7 +8,6 @@
 #include "threads/thread.h"
 
 #include "projects/automated_warehouse/aw_message.h"
-#include "projects/automated_warehouse/aw_message.c"
 
 #include "devices/timer.h"
 

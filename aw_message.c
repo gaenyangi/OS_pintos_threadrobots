@@ -1,9 +1,12 @@
 #include "projects/automated_warehouse/aw_message.h"
 
+
+/*
 // Message boxes from central control node to each robot
 struct messsage_box* boxes_from_central_control_node;
 // Message boxes from robots to central control node
 struct messsage_box* boxes_from_robots;
+*/
 
 void init_message_boxes(int robot_count) {
     // Allocate memory for message boxes
