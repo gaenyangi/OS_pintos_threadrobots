@@ -1,10 +1,14 @@
 #include <stdio.h>
+#include<stdlib.h>
 #include <string.h>
 
 #include "threads/init.h"
 #include "threads/malloc.h"
 #include "threads/synch.h"
 #include "threads/thread.h"
+
+#include "automated_warehouse/aw_message.h"
+#include "automated_warehouse/aw_message.c"
 
 #include "devices/timer.h"
 
@@ -23,24 +27,24 @@ void cnt() {
             recieve_message_from_robot(i);
 
             if (i == robot_current) {
-                if (recieve_message_from_robot(i).current_payload == recieve_message_from_robot(i).required_payload
-                    && recieve_message_from_robot(i).row == recieve_message_from_robot(i).tar_row
-                    && recieve_message_from_robot(i).col == recieve_message_from_robot(i).tar_col) {
+                if (receive_message_from_robot(i).current_payload == receive_message_from_robot(i).required_payload
+                    && receive_message_from_robot(i).row == receive_message_from_robot(i).tar_row
+                    && receive_message_from_robot(i).col == receive_message_from_robot(i).tar_col) {
                     robot_current++;// if robot gets to destination with req, move the next robot.
                     break;
                 }
-                if else (recieve_message_from_robot(i).current_payload == recieve_message_from_robot(i).required_payload) { //check payload status
-                    recieve_message_from_robot(i).cmd = 1; //if payload success, move to target destination
-                    send_message_to_robot(i, recieve_message_from_robot(i));
+                else if (receive_message_from_robot(i).current_payload == receive_message_from_robot(i).required_payload) { //check payload status
+                    receive_message_from_robot(i).cmd = 1; //if payload success, move to target destination
+                    send_message_to_robot(i, receive_message_from_robot(i));
                 }
                 else {
-                    recieve_message_from_robot(i).cmd = 2; // haven't get payload, move to req
-                    send_message_to_robot(i, recieve_message_from_robot(i));
+                    receive_message_from_robot(i).cmd = 2; // haven't get payload, move to req
+                    send_message_to_robot(i, receive_message_from_robot(i));
                 }
             }
             else { //set other robots as waiting
-                recieve_message_from_robot(i).cmd = 0;
-                send_message_to_robot(i, recieve_message_from_robot(i));
+                receive_message_from_robot(i).cmd = 0;
+                send_message_to_robot(i, receive_message_from_robot(i));
             }
         }
         unblock_threads();
@@ -120,6 +124,7 @@ void run_automated_warehouse(char **argv)
         for (int i = 1; i < robot_count + 1; i++) {
             char thread_name[5];
             sprintf(thread_name, "R&d", i);
+            idxs[i] = i;
             threads[i] = thread_create(thread_name, 0, &robot_thread, &idxs[i]);
         }
 
