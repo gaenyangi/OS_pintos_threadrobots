@@ -7,8 +7,8 @@
 #include "threads/synch.h"
 #include "threads/thread.h"
 
-#include "automated_warehouse/aw_message.h"
-#include "automated_warehouse/aw_message.c"
+#include "projects/automated_warehouse/aw_message.h"
+#include "projects/automated_warehouse/aw_message.c"
 
 #include "devices/timer.h"
 
@@ -24,27 +24,26 @@ void cnt() {
 
         print_map(robots, robot_count);
         for (int i = 1; i < robot_count+1; i++) {
-            recieve_message_from_robot(i);
-
+            struct message* robot_msg = receive_message_from_robot(i);
             if (i == robot_current) {
-                if (receive_message_from_robot(i).current_payload == receive_message_from_robot(i).required_payload
-                    && receive_message_from_robot(i).row == receive_message_from_robot(i).tar_row
-                    && receive_message_from_robot(i).col == receive_message_from_robot(i).tar_col) {
+                if (robot_msg->current_payload == robot_msg->required_payload
+                    && robot_msg->row == robot_msg->tar_row
+                    && robot_msg->col == robot_msg->tar_col) {
                     robot_current++;// if robot gets to destination with req, move the next robot.
                     break;
                 }
-                else if (receive_message_from_robot(i).current_payload == receive_message_from_robot(i).required_payload) { //check payload status
-                    receive_message_from_robot(i).cmd = 1; //if payload success, move to target destination
-                    send_message_to_robot(i, receive_message_from_robot(i));
+                else if (robot_msg->current_payload == robot_msg->required_payload) { //check payload status
+                    robot_msg->cmd = 1; //if payload success, move to target destination
+                    send_message_to_robot(i, *robot_msg);
                 }
                 else {
-                    receive_message_from_robot(i).cmd = 2; // haven't get payload, move to req
-                    send_message_to_robot(i, receive_message_from_robot(i));
+                    robot_msg->cmd = 2; // haven't get payload, move to req
+                    send_message_to_robot(i, *robot_msg);
                 }
             }
             else { //set other robots as waiting
-                receive_message_from_robot(i).cmd = 0;
-                send_message_to_robot(i, receive_message_from_robot(i));
+                robot_msg->cmd = 0;
+                send_message_to_robot(i, *robot_msg);
             }
         }
         unblock_threads();
@@ -56,7 +55,7 @@ void robot_thread(void* aux) { // robot_thread implement
     int idx = *((int*)aux);   
     printf("thread for robot %d \n",idx);
     while (1) {
-        int cmd=recieve_message_from_cnt(idx);
+        int cmd=receive_message_from_cnt(idx);
         switch(cmd){
         case 0:
             //wait
@@ -69,15 +68,14 @@ void robot_thread(void* aux) { // robot_thread implement
             break;
         }
 
-        boxes_from_robots[idx]->msg.row = robots[idx].row;
-        boxes_from_robots[idx]->msg.col = robots[idx].col;
-        boxes_from_robots[idx]->msg.current_payload = robots[idx].current_payload;
-        boxes_from_robots[idx]->msg.required_payload = robots[idx].required_payload;
-        boxes_from_robots[idx]->msg.tar_row = robots[idx].tar_row;
-        boxes_from_robots[idx]->msg.tar_col = robots[idx].tar_col;
+        boxes_from_robots[idx].msg.row = robots[idx].row;
+        boxes_from_robots[idx].msg.col = robots[idx].col;
+        boxes_from_robots[idx].msg.current_payload = robots[idx].current_payload;
+        boxes_from_robots[idx].msg.required_payload = robots[idx].required_payload;
+        boxes_from_robots[idx].msg.tar_row = robots[idx].tar_row;
+        boxes_from_robots[idx].msg.tar_col = robots[idx].tar_col;
 
-        send_message_to_cnt(robots[idx], boxes_from_robots[idx]->msg);
-        block_thread();
+        send_message_to_cnt(idx, boxes_from_robots[idx]->msg); // send message and block itself
     }
 }
 
