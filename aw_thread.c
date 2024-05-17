@@ -15,6 +15,11 @@
 
 struct list blocked_threads;
 
+// Initialize the list of blocked threads
+void init_blocked_threads() {
+    list_init(&blocked_threads);
+}
+
 /**
  * A function unblocking all blocked threads in "blocked_threads" 
  * It must be called by robot threads
@@ -39,9 +44,10 @@ void unblock_threads(){// you must implement this
     old_level = intr_disable();
 
     // Iterate through the list of blocked threads and unblock each thread
-    struct list_elem* e;
-    for (e = list_begin(&blocked_threads); e != list_end(&blocked_threads); e = list_next(e)) {
-        thread_unblock(list_entry(list_pop_front(&blocked_threads), struct thread, elem));
+    while (!list_empty(&blocked_threads)) {
+        struct list_elem* e = list_pop_front(&blocked_threads);
+        struct thread* t = list_entry(e, struct thread, elem);
+        thread_unblock(t);
     }
     intr_set_level(old_level);
 }

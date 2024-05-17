@@ -1,31 +1,40 @@
+#include <stdlib.h>
+
 #include "projects/automated_warehouse/aw_message.h"
 
-
-/*
 // Message boxes from central control node to each robot
 struct messsage_box* boxes_from_central_control_node;
 // Message boxes from robots to central control node
 struct messsage_box* boxes_from_robots;
-*/
+
 
 void init_message_boxes(int robot_count) {
     // Allocate memory for message boxes
     boxes_from_central_control_node = malloc(sizeof(struct messsage_box) * robot_count);
     boxes_from_robots = malloc(sizeof(struct messsage_box) * robot_count);
+    
+    struct message msginit;
+    msginit.row = -1;
+    msginit.col = -1;
+    msginit.current_payload = -2;
+    msginit.required_payload = -1;
+    msginit.tar_row = 1;
+    msginit.tar_col = -1;
+    msginit.cmd = 0;
 
     // Initialize message boxes
     for (int i = 0; i < robot_count; i++) {
         boxes_from_central_control_node[i].dirtyBit = 0;
         boxes_from_robots[i].dirtyBit = 0;
+        boxes_from_central_control_node[i].msg = msginit;
+        boxes_from_robots[i].msg = msginit;
     }
 }
 
 void send_message_to_cnt(int robot_index, struct message msg) {
     // Write the message to the message box of CNT
     boxes_from_robots[robot_index].msg = msg;
-    boxes_from_robots[robot_index].dirtyBit = 1;
-    // Block the current thread
-    block_thread();
+    boxes_from_robots[robot_index].dirtyBit = 1;  
 }
 
 struct message* receive_message_from_robot(int robot_index) {
